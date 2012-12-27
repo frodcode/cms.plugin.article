@@ -3,4 +3,4 @@
 ${article.vars.article.body }
 </div>
 
-<a href="${routing.mc.findPageBySingletonType('pluginlist').url}">zpět na seznam článků</a>
+<a href="${routing.mc.findPageBySingletonType('pluginlist').getLinkTo(page)}">zpět na seznam článků</a>
