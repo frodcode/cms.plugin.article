@@ -34,3 +34,4 @@ grails.project.dependency.resolution = {
         }
     }
 }
+grails.plugin.location.Routing = "../Routing"

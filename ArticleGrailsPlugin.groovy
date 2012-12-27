@@ -43,7 +43,15 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+       'article.control.ArticleModuleControl'(article.control.ArticleModuleControl) {
+		   adminUrlResolver = ref('adminUrlResolver')
+	   }
+	   adminUrlResolver(article.control.AdminUrlResolver) {
+		   pattern = '/article/<id>'
+	   }
+	   articleService(article.ArticleService) {
+		   routingService = ref('routingService')
+	   }
     }
 
     def doWithDynamicMethods = { ctx ->
