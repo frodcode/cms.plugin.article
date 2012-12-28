@@ -1,18 +1,29 @@
 package article.control
 
 import article.Article;
+import article.ArticleService;
 import domain.routing.Page
+import domain.routing.PageType;
+import routing.RoutingService
 
 class ArticleModuleControl {	
 	
-	def adminUrlResolver;
+	ArticleService articleService;
 	
-	public def getFrontArticleList(def page, def moduleRequest) {
+	RoutingService routingService;
+	
+	def onArticleCreate = { controlResponse ->
+		Page redirectPage = routingService.getSingleton('admin_article_creating');
+		controlResponse.addFlash('message', 'Article has been added')
+		controlResponse.addRedirect(redirectPage)
+	}
+	
+	public def getFrontArticleList(def page, def moduleRequest, def moduleResponse) {
 		def articles = Article.findAll();
 		return [articles:articles];
 	}
 	
-	public def getFrontArticle(def page, def moduleRequest) {
+	public def getFrontArticle(def page, def moduleRequest, def moduleResponse) {
 		def article = Article.where{
 					pages {
 						id == page.id
@@ -21,7 +32,7 @@ class ArticleModuleControl {
 		return ['article' : article]
 	}
 	
-	public def loadArticleForEdit(def page, def moduleRequest) {
+	public def loadArticleForEdit(def page, def moduleRequest, def moduleResponse) {
 		def article = Article.where{
 			pages {
 				id == page.id
@@ -30,20 +41,19 @@ class ArticleModuleControl {
 		return ['article' : article]
 	}
 	
-	public def loadArticlesForAdmin(def page, def moduleRequest) {
+	public def loadArticlesForAdmin(def page, def moduleRequest, def moduleResponse) {
 		return [articles: Article.findAll()]
 	}
 	
-	public def createArticle(def page, def moduleRequest) {
-		def newArticle = new Article(moduleRequest)
-		def articlePage = new Page(moduleRequest['page']);
-		
-		def parentAdminPage = Page.find(moduleRequest['parentAdminPageId']);
-		def adminPage = new Page(urlPart: adminUrlResolver.getUrlPart(newArticle), parent: parentAdminPage, pageType: adminPageType)
-		
-		newArticle.addToPages(articlePage);
-		newArticle.addToPages(adminPage);
-		newArticle.save()
+	public def saveArticle(def page, def moduleRequest, def moduleResponse) {
+		//def moduleRequest, Page parentFrontPage, PageType frontPageType, Page parentAdminPage, PageType adminPageType
+		articleService.createArticle(moduleRequest, 
+			Page.findById(moduleRequest.parentFrontPageId.toLong()), 
+			PageType.findById(moduleRequest.frontPageTypeId), 
+			Page.findById(moduleRequest.parentAdminPageId), 
+			PageType.findById(moduleRequest.adminPageTypeId))
+		moduleResponse.addCall(this.onArticleCreate)
+		return [:]
 	}
 
 }

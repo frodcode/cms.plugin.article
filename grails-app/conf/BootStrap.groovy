@@ -34,10 +34,10 @@ class BootStrap {
 				registeredCalls : []
 				),
 			PageType articleListPageType = new PageType(
-				slug : 'pluginlist',
-				description: 'Seznam pluginů',
+				slug : 'article_list',
+				description: 'Article list',
 				singleton: true,
-				templateName: '/article/front/pluginList',
+				templateName: '/article/front/articleList',
 				moduleControls: moduleControls,
 				registeredCalls : [
 					new RegisteredCall(
@@ -46,11 +46,11 @@ class BootStrap {
 						),
 					]
 				),
-			PageType articlePageType = new PageType(
-				slug : 'plugindetail',
-				description: 'Detail pluginu',
+			PageType articleDetailPageType = new PageType(
+				slug : 'article_detail',
+				description: 'Detail of plugin',
 				singleton: false,
-				templateName: '/article/front/pluginDetail',
+				templateName: '/article/front/articleDetail',
 				moduleControls: moduleControls,
 				registeredCalls : [
 					new RegisteredCall(
@@ -104,10 +104,18 @@ class BootStrap {
 				singleton: true,
 				templateName: '/article/admin/detail',
 				moduleControls: moduleControls,
+				registeredCalls : [],
+			),
+			PageType adminArticleSavePage = new PageType(
+				slug : 'admin_article_save',
+				description: 'Admin article save page',
+				singleton: true,
+				templateName: '/article/admin/detail',
+				moduleControls: moduleControls,
 				registeredCalls : [
 						new RegisteredCall(
 							moduleControl: articleMC,
-							methodName: 'createArticle',
+							methodName: 'saveArticle',
 						),
 					],
 			),
@@ -123,9 +131,9 @@ class BootStrap {
 				pageType: homepagePageType
 				),
 			
-			Page plugins = new Page(
+			Page articleList = new Page(
 				parent: homepage,
-				urlPart: '/plugins',
+				urlPart: '/article-list',
 				pageType: articleListPageType
 				),
 //			Page contentPlugin = new Page(
@@ -157,6 +165,11 @@ class BootStrap {
 				urlPart: '/article/create',
 				pageType: adminArticleCreatingPage
 				),
+			Page adminArticleSave = new Page(
+				parent: adminHomepage,
+				urlPart: '/article/save',
+				pageType: adminArticleSavePage
+				),
 //			Page adminArticleDetail1 = new Page(
 //				parent: adminHomepage,
 //				urlPart: '/article/detail/1',
@@ -171,8 +184,8 @@ class BootStrap {
 		pages*.save();
 		def ctx = servletContext.getAttribute(ApplicationAttributes.APPLICATION_CONTEXT)
 		def articleService = ctx.articleService
-		articleService.createArticle([name: 'Content', body: 'Content is one of module for content handling'],\
-			plugins, 'plugindetail', adminHomepage, 'admin_article_detail')
+		articleService.createArticle([name: 'Content', body: 'Content is one of module for content handling'],
+			articleList, articleDetailPageType, adminHomepage, adminArticleDetailPage)
 		
 //		def articles = [
 //			Article contentArticle = new Article(pages : ['admin': adminArticleDetail1, 'front' : contentPlugin], name: 'Content', body: 'Content is one of module for content handling'),

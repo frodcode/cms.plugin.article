@@ -44,7 +44,8 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
        'article.control.ArticleModuleControl'(article.control.ArticleModuleControl) {
-		   adminUrlResolver = ref('adminUrlResolver')
+		   articleService = ref('articleService')
+		   routingService = ref('routingService')
 	   }
 	   adminUrlResolver(article.control.AdminUrlResolver) {
 		   pattern = '/article/<id>'
