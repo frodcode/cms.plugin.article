@@ -3,4 +3,4 @@
 ${article.vars.article.body }
 </div>
 
-<a href="${routing.mc.getSingleton('article_list').getLinkTo(page)}">zpět na seznam článků</a>
+<a href="${routing.mc.getSingleton(article.mc.frontListSlug).getLinkTo(page)}">zpět na seznam článků</a>
